@@ -1,0 +1,152 @@
+===========================================================
+--> UC1 Ability to create a payroll service database
+===========================================================
+
+mysql> create database payroll_services;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> show databases;
++----------------------+
+| Database             |
++----------------------+
+| address_book_serice  |
+| address_book_service |
+| blzdemo              |
+| information_schema   |
+| learn                |
+| mysql                |
+| payroll_services     |
+| performance_schema   |
+| sakila               |
+| student              |
+| sys                  |
+| user                 |
+| world                |
++----------------------+
+13 rows in set (0.05 sec)
+
+===================================================================================================================
+--> UC2  Ability to create a employee payroll table in the payroll service database to manage employee payrolls
+===================================================================================================================
+
+mysql> use payroll_services;
+Database changed
+mysql> create table employee_payroll(id int not null auto_increment, name varchar(50) not null,salary Double not null,startDate Date not null, primary key(id) );
+Query OK, 0 rows affected (0.35 sec)
+
+mysql> desc employee_payroll;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| id        | int         | NO   | PRI | NULL    | auto_increment |
+| name      | varchar(50) | NO   |     | NULL    |                |
+| salary    | double      | NO   |     | NULL    |                |
+| startDate | date        | NO   |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+4 rows in set (0.01 sec)
+
+==================================================================================================================
+--> UC3 Ability to create employee payroll data in the payroll service database as part of CRUD Operation
+==================================================================================================================
+
+mysql> insert into employee_payroll(name, salary,startDate)values("Anant",30000,"2021-01-11");
+Query OK, 1 row affected (0.35 sec)
+
+mysql> insert into employee_payroll(name, salary,startDate)values("Aditya",40000,"2021-05-10");
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into employee_payroll(name, salary,startDate)values("Pashya",50000,"2021-06-10");
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into employee_payroll(name, salary,startDate)values("Ram",30000,"2021-05-12");
+Query OK, 1 row affected (0.03 sec)
+
+=====================================================================================================
+--> UC4 Ability to retrieve all the employee payroll data that is added to payroll service database
+======================================================================================================
+mysql> select * from employee_payroll;
++----+--------+--------+------------+
+| id | name   | salary | startDate  |
++----+--------+--------+------------+
+|  1 | Anant  |  30000 | 2021-01-11 |
+|  2 | Aditya |  40000 | 2021-05-10 |
+|  3 | Pashya |  50000 | 2021-06-10 |
+|  4 | Ram    |  30000 | 2021-05-12 |
++----+--------+--------+------------+
+4 rows in set (0.03 sec)
+
+===========================================================
+--> UC5 -Ability to retrieve salary data for a particular employee as well as all employees who have joined in a particular data range from the payroll service database
+===========================================================
+
+mysql> select * from employee_payroll where salary > 40000;
++----+--------+--------+------------+
+| id | name   | salary | startDate  |
++----+--------+--------+------------+
+|  3 | Pashya |  50000 | 2021-06-10 |
++----+--------+--------+------------+
+1 row in set (0.07 sec)
+
+mysql> select * from employee_payroll where startDate between '2021-06-17' AND Date(now());
+Empty set (0.03 sec)
+
+mysql> select * from employee_payroll where startDate between '2021-05-17' AND Date(now());
++----+--------+--------+------------+
+| id | name   | salary | startDate  |
++----+--------+--------+------------+
+|  3 | Pashya |  50000 | 2021-06-10 |
++----+--------+--------+------------+
+1 row in set (0.00 sec)
+
+===================================================================================================================
+--> UC6 Ability to add Gender to Employee Payroll Table and Update the Rows to reflect the correct Employee Gender
+===================================================================================================================
+mysql> update employee_payroll set gender = 'M' where id>0;
+ERROR 1054 (42S22): Unknown column 'gender' in 'field list'
+mysql> alter table employee_payroll add gender;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> alter table employee_payroll add gender varchar(10);
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> update employee_payroll set gender = 'M' where id>0;
+Query OK, 4 rows affected (0.05 sec)
+Rows matched: 4  Changed: 4  Warnings: 0
+
+mysql> update employee_payroll set gender = 'M' where id>1;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 3  Changed: 0  Warnings: 0
+
+mysql> update employee_payroll set gender = 'M' where id>2;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 2  Changed: 0  Warnings: 0
+
+mysql> update employee_payroll set gender = 'M' where id>3;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
+mysql> select * from employee_payroll;
++----+--------+--------+------------+--------+
+| id | name   | salary | startDate  | gender |
++----+--------+--------+------------+--------+
+|  1 | Anant  |  30000 | 2021-01-11 | M      |
+|  2 | Aditya |  40000 | 2021-05-10 | M      |
+|  3 | Pashya |  50000 | 2021-06-10 | M      |
+|  4 | Ram    |  30000 | 2021-05-12 | M      |
++----+--------+--------+------------+--------+
+4 rows in set (0.00 sec)
+
+
+=========================================================================================
+--> UC7 Ability to find sum, average, min, max and number of male and female employees
+========================================================================================
+
+mysql> select sum(salary) from employee_payroll where gender ='M' group by gender;
++-------------+
+| sum(salary) |
++-------------+
+|      150000 |
++-------------+
+1 row in set (0.07 sec)
+
+mysql>
